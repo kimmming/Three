@@ -5,5 +5,18 @@ window.addEventListener('load', function(){
 })
 
 function init(){
-  console.log(THREE)
+  const renderer = new THREE.WebGL1Renderer();
+
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene()
+
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    window.innerWidth/window.innerHeight,
+    1,
+    500,
+  )
+
+  renderer.render(scene, camera)
 }
