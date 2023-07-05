@@ -12,6 +12,7 @@ function init(){
 
   renderer.setSize(window.innerWidth, window.innerHeight);
 
+
   document.body.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -24,7 +25,14 @@ function init(){
   );
 
   const geometry = new THREE.BoxGeometry(2,2,2);
-  const material = new THREE.MeshStandardMaterial({color:0xcc99ff})
+  const material = new THREE.MeshStandardMaterial({
+    color:'skyblue',
+    // transparent: true,
+    // opacity:0.5,
+    // visible:false,
+    // wireframe: true,
+    // side: THREE.BackSide
+  })
 
   const cube = new THREE.Mesh(geometry, material);
 
@@ -44,4 +52,12 @@ function init(){
   scene.add(ambientLight)
 
   renderer.render(scene, camera);
+
+  function handleResize(){
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.render(scene, camera);
+  };
+  window.addEventListener('resize', handleResize);
 };
