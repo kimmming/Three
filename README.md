@@ -1,9 +1,9 @@
-# 패스트캠퍼스 Three.js 강의 기록
+# Three.js-Study
 [패스트캠퍼스_21개 프로젝트로 완성하는 인터랙티브 웹 개발](https://fastcampus.co.kr/dev_online_interactive)
 
 해당 강의를 수강하며 남기는 기록입니다.
 
-## 구성 - issue 페이지로 넘어갑니다.
+## 강의 기록 - issue 페이지로 넘어갑니다.
 
 1. Vite로 보일러플레이트 구성하기 - https://github.com/kimmming/Three.js-Study/issues/1
 2. 3D 큐브 생성하기 - https://github.com/kimmming/Three.js-Study/issues/3
