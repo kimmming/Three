@@ -3,7 +3,9 @@
 
 해당 강의를 수강하며 남기는 기록입니다.
 
-## 강의 기록 - issue 페이지로 넘어갑니다.
+## 강의 기록 
+
+클릭시 issue 페이지로 넘어갑니다.
 
 1. Vite로 보일러플레이트 구성하기 - https://github.com/kimmming/Three.js-Study/issues/1
 2. 3D 큐브 생성하기 - https://github.com/kimmming/Three.js-Study/issues/3
