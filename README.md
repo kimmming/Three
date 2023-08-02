@@ -9,6 +9,8 @@
 
 1. Vite로 보일러플레이트 구성하기 - https://github.com/kimmming/Three.js-Study/issues/1
 2. 3D 큐브 생성하기 - https://github.com/kimmming/Three.js-Study/issues/3
+3. 기본 템플릿 생성하기 - https://github.com/kimmming/Three.js-Study/issues/4
+4. 3D 지구 생성하기 - https://github.com/kimmming/Three.js-Study/issues/5
 
 ## 커밋 컨벤션
 
