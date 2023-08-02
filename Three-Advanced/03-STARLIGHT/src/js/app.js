@@ -3,6 +3,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { convertLatLngToPos,getGradientCanvas } from './utils';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js'
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'  
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 export default function () {
   const renderer = new THREE.WebGLRenderer({
@@ -60,6 +63,13 @@ export default function () {
   const addPostEfeects = ()=>{
     const renderPass = new RenderPass(scene,camera);
     effectComposer.addPass(renderPass);
+
+    const filmPass = new FilmPass();
+    effectComposer.addPass(filmPass); 
+
+    const shaderPass = new ShaderPass(GammaCorrectionShader);
+    effectComposer.addPass(shaderPass);
+
   }
 
   const createEarth1 = () => {
