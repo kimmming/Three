@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { convertLatLngToPos } from './utils';
+import { convertLatLngToPos,getGradientCanvas } from './utils';
 export default function () {
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -118,11 +118,13 @@ export default function () {
     const position = convertLatLngToPos(point,1.3);
 
     const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.03,20,20),
-      new THREE.MeshBasicMaterial({color:0xff00ff})
+      new THREE.TorusGeometry(0.02,0.002,20,20),
+      new THREE.MeshBasicMaterial({color:0x263d74})
     );
 
     mesh.position.set(position.x,position.y,position.z);
+    mesh.rotation.set(0.9,2.46,1);
+
     return mesh;
   }
 
@@ -136,27 +138,60 @@ export default function () {
     const position = convertLatLngToPos(point,1.3);
 
     const mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(0.03,20,20),
-      new THREE.MeshBasicMaterial({color:0xff00ff})
+      new THREE.TorusGeometry(0.02,0.002,20,20),
+      new THREE.MeshBasicMaterial({color:0x263d74})
     );
 
     mesh.position.set(position.x,position.y,position.z);
     return mesh;
   }
 
+  const createCurve=(pos1,pos2)=>{
+    const points =[];
+    for(let i =0;i<100;i++){
+      const pos = new THREE.Vector3().lerpVectors(pos1, pos2, i/100);
+      pos.normalize();
+
+      const wave = Math.sin((Math.PI * i)/100);
+
+      pos.multiplyScalar(1.3+ 0.3*wave);
+      points.push(pos);
+    }
+
+    const curve = new THREE.CatmullRomCurve3(
+      points
+    );
+    const geometry = new THREE.TubeGeometry(
+      curve,
+      20,
+      0.003
+    );
+
+    const gradientCanvas = getGradientCanvas('#757F94', '#263D74')
+    const texture = new THREE.CanvasTexture(gradientCanvas);
+
+    const material = new THREE.MeshBasicMaterial({map:texture})
+    const mesh = new THREE.Mesh(geometry,material);
+
+    return mesh;
+  }
+
 
   const create =()=>{
+    const earthGroup = new THREE.Group();
+
     const earth1 = createEarth1();
     const earth2 = createEarth2();
     const star = createStar();
     const point1 = createPoint1();
-    const point2 = createPoint2()
-    scene.add(earth1,earth2,star,point1, point2);
+    const point2 = createPoint2();
+    const curve = createCurve(point1.position, point2.position);
+    
+    earthGroup.add(earth1,earth2,point1,point2,curve);
+    scene.add(earthGroup,star);
 
     return{
-      earth1,
-      earth2,
-      star
+        earthGroup,star
     }
   }
 
@@ -177,15 +212,13 @@ export default function () {
   };
 
   const draw = (obj) => {
-    const {earth1, earth2, star} = obj;
-    // earth1.rotation.x += 0.0005;
-    // earth1.rotation.y += 0.0005;
+    const {earthGroup, star} = obj;
+    earthGroup.rotation.x += 0.0005;
+    earthGroup.rotation.y += 0.0005;
 
-    // earth2.rotation.x += 0.0005;
-    // earth2.rotation.y += 0.0005;
 
-    // star.rotation.x +=0.0001;
-    // star.rotation.y +=0.0001;
+    star.rotation.x +=0.0001;
+    star.rotation.y +=0.0001;
 
     controls.update();
     renderer.render(scene, camera);
