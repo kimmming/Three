@@ -53,13 +53,36 @@ export default function () {
   const createEarth1 = () => {
     const material = new THREE.MeshStandardMaterial({
       map: textureLoader.load('assets/2k_earth_nightmap.jpg'),
+      side: THREE.FrontSide,
+      opacity:0.6,
+      transparent: true,
     })
 
     const geometry = new THREE.SphereGeometry(1.3, 30,30);
 
     const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
+    return mesh;
   };
+  
+  const createEarth2 = () =>{
+    const material = new THREE.MeshStandardMaterial({
+      map: textureLoader.load('assets/2k_earth_nightmap.jpg'),
+      opacity:0.9,
+      transparent: true,
+      side: THREE.BackSide,
+    })
+    const geometry = new THREE.SphereGeometry(1.5, 30,30);
+
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+  }
+
+  const create =()=>{
+    const earth1 = createEarth1()
+    const earth2 = createEarth2()
+    scene.add(earth1,earth2)
+  }
 
 
   const resize = () => {
@@ -86,8 +109,8 @@ export default function () {
   };
 
   const initialize = () => {
-    addLight()
-    createEarth1();
+    addLight();
+    create();
     addEvent();
     resize();
     draw();
