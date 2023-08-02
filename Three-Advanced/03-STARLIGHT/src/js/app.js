@@ -1,11 +1,18 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { convertLatLngToPos,getGradientCanvas } from './utils';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+
 export default function () {
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
   });
   renderer.outputEncoding = THREE.sRGBEncoding;
+
+  const effectComposer = new EffectComposer(
+    renderer
+  );
   const textureLoader = new THREE.TextureLoader();
   const cubeTextureLoader = new THREE.CubeTextureLoader();
   const environmentMap = cubeTextureLoader.load([
@@ -44,11 +51,16 @@ export default function () {
   controls.enableDamping = true;
   controls.dampingFactor = 0.1;
 
-    const addLight = () =>{
-      const light = new THREE.DirectionalLight(0xffffff);
-      light.position.set(2.65, 2.13,1.02);
-      scene.add(light)
-    }
+  const addLight = () =>{
+    const light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(2.65, 2.13,1.02);
+    scene.add(light);
+  }
+
+  const addPostEfeects = ()=>{
+    const renderPass = new RenderPass(scene,camera);
+    effectComposer.addPass(renderPass);
+  }
 
   const createEarth1 = () => {
     const material = new THREE.MeshStandardMaterial({
@@ -205,6 +217,7 @@ export default function () {
 
     renderer.setSize(canvasSize.width, canvasSize.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    effectComposer.setSize(canvasSize.width, canvasSize.height);
   };
 
   const addEvent = () => {
@@ -221,15 +234,18 @@ export default function () {
     star.rotation.y +=0.0001;
 
     controls.update();
-    renderer.render(scene, camera);
+    effectComposer.render();
+    // renderer.render(scene, camera);
     requestAnimationFrame(() => {
       draw(obj);
     });
   };
 
   const initialize = () => {
-    addLight();
     const obj = create();
+
+    addLight();
+    addPostEfeects();
     addEvent();
     resize();
     draw(obj);
