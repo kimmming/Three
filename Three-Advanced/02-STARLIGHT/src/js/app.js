@@ -5,8 +5,19 @@ export default function () {
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
   });
-
+  renderer.outputEncoding = THREE.sRGBEncoding;
   const textureLoader = new THREE.TextureLoader();
+  const cubeTextureLoader = new THREE.CubeTextureLoader();
+  const environmentMap = cubeTextureLoader.load([
+    'assets/environments/px.png',
+    'assets/environments/nx.png',
+    'assets/environments/py.png',
+    'assets/environments/ny.png',
+    'assets/environments/pz.png',
+    'assets/environments/nz.png',
+  ]);
+
+  environmentMap.encoding = THREE.sRGBEncoding;
 
   const container = document.querySelector('#container');
 
@@ -18,6 +29,9 @@ export default function () {
   };
 
   const scene = new THREE.Scene();
+  scene.background = environmentMap;
+  scene.environment = environmentMap;
+
   const camera = new THREE.PerspectiveCamera(
     75,
     canvasSize.width / canvasSize.height,
@@ -30,8 +44,14 @@ export default function () {
   controls.enableDamping = true;
   controls.dampingFactor = 0.1;
 
+    const addLight = () =>{
+      const light = new THREE.DirectionalLight(0xffffff);
+      light.position.set(2.65, 2.13,1.02);
+      scene.add(light)
+    }
+
   const createEarth1 = () => {
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshStandardMaterial({
       map: textureLoader.load('assets/2k_earth_nightmap.jpg'),
     })
 
@@ -40,6 +60,7 @@ export default function () {
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
   };
+
 
   const resize = () => {
     canvasSize.width = window.innerWidth;
@@ -65,6 +86,7 @@ export default function () {
   };
 
   const initialize = () => {
+    addLight()
     createEarth1();
     addEvent();
     resize();
