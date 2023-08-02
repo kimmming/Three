@@ -6,6 +6,8 @@ export default function () {
     alpha: true,
   });
 
+  const textureLoader = new THREE.TextureLoader();
+
   const container = document.querySelector('#container');
 
   container.appendChild(renderer.domElement);
@@ -30,7 +32,7 @@ export default function () {
 
   const createEarth1 = () => {
     const material = new THREE.MeshBasicMaterial({
-      color: 0x1234ff
+      map: textureLoader.load('assets/2k_earth_nightmap.jpg'),
     })
 
     const geometry = new THREE.SphereGeometry(1.3, 30,30);
