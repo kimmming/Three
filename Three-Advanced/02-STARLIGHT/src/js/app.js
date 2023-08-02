@@ -74,7 +74,7 @@ export default function () {
     const geometry = new THREE.SphereGeometry(1.5, 30,30);
 
     const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
+    return mesh;
 
   }
 
@@ -93,20 +93,29 @@ export default function () {
     );
     
     const particlematerial = new THREE.PointsMaterial({
-      size:0.1,
+      size:0.05,
       transparent:true,
-      map:textureLoader.load('assets/particle.png')
+      depthWrite: false,
+      map:textureLoader.load('assets/particle.png'),
+      alphaMap: textureLoader.load('assets/particle.png'),
+      color:0xbcc6c6
     });
 
     const star = new THREE.Points(particleGeometry, particlematerial);
-    return star
+    return star;
   }
 
   const create =()=>{
     const earth1 = createEarth1();
     const earth2 = createEarth2();
     const star = createStar();
-    scene.add(earth1,earth2,star)
+    scene.add(earth1,earth2,star);
+
+    return{
+      earth1,
+      earth2,
+      star
+    }
   }
 
 
@@ -125,20 +134,30 @@ export default function () {
     window.addEventListener('resize', resize);
   };
 
-  const draw = () => {
+  const draw = (obj) => {
+    const {earth1, earth2, star} = obj;
+    earth1.rotation.x += 0.0005;
+    earth1.rotation.y += 0.0005;
+
+    earth2.rotation.x += 0.0005;
+    earth2.rotation.y += 0.0005;
+
+    star.rotation.x +=0.0001;
+    star.rotation.y +=0.0001;
+
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(() => {
-      draw();
+      draw(obj);
     });
   };
 
   const initialize = () => {
     addLight();
-    create();
+    const obj = create();
     addEvent();
     resize();
-    draw();
+    draw(obj);
   };
 
   initialize();
