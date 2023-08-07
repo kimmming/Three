@@ -6,15 +6,32 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'  
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import {GlitchPass} from 'three/examples/jsm/postprocessing/GlitchPass.js'
+import {AfterimagePass} from 'three/examples/jsm/postprocessing/AfterimagePass.js'
+import {HalftonePass} from 'three/examples/jsm/postprocessing/HalftonePass.js'
+import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+
 
 export default function () {
+  const canvasSize = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+  
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
   });
   renderer.outputEncoding = THREE.sRGBEncoding;
+  const renderTarget = new THREE.WebGLRenderTarget(
+    canvasSize.width,
+    canvasSize.height,
+    {
+      samples:2,
+    }
+  );
 
   const effectComposer = new EffectComposer(
-    renderer
+    renderer,renderTarget
   );
   const textureLoader = new THREE.TextureLoader();
   const cubeTextureLoader = new THREE.CubeTextureLoader();
@@ -33,10 +50,6 @@ export default function () {
 
   container.appendChild(renderer.domElement);
 
-  const canvasSize = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-  };
 
   const scene = new THREE.Scene();
   scene.background = environmentMap;
@@ -64,11 +77,39 @@ export default function () {
     const renderPass = new RenderPass(scene,camera);
     effectComposer.addPass(renderPass);
 
-    const filmPass = new FilmPass();
-    effectComposer.addPass(filmPass); 
+    const filmPass = new FilmPass(1,1,4096,false);
+    // effectComposer.addPass(filmPass); 
 
     const shaderPass = new ShaderPass(GammaCorrectionShader);
-    effectComposer.addPass(shaderPass);
+    
+    const glitchPass = new GlitchPass();
+    // effectComposer.addPass(glitchPass);
+    // glitchPass.goWild = true
+
+    const afterimagePass = new AfterimagePass(0.96);
+    // effectComposer.addPass(afterimagePass)
+    // effectComposer.addPass(shaderPass);
+
+    const halftonePass = new HalftonePass(
+      canvasSize.width,
+      canvasSize.height,
+      {
+        radius: 10, 
+        shape:1,
+        scatter:0,
+        blending:1
+      }
+    )
+    // effectComposer.addPass(halftonePass);
+
+    const unrealBloomPass = new UnrealBloomPass(
+      new THREE.Vector2(canvasSize.width, canvasSize.height)
+    );
+    // unrealBloomPass.strength=1;
+    // unrealBloomPass.threshold=0.1;
+    // unrealBloomPass.radius=1.5;
+      // effectComposer.addPass(unrealBloomPass);
+      effectComposer.addPass(shaderPass);
 
   }
 
