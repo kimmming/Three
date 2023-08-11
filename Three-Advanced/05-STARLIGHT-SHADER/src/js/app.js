@@ -9,6 +9,9 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import {SMAAPass} from 'three/examples/jsm/postprocessing/SMAAPass.js'
 import dat from 'dat.gui'
+import vertexShader from '../shaders/vertex.glsl'
+import fragmentShader from '../shaders/fragment.glsl'
+
 
 export default function () {
   const canvasSize = {
@@ -92,36 +95,8 @@ export default function () {
         tDiffuse: { value: null },
         uBrightness: {value:1}
       },
-      vertexShader: `
-      varying vec2 vPosition;
-      varying vec2 vUv;
-
-        void main(){
-          gl_Position = vec4(position.x, position.y, 0.0, 1.0);
-          vPosition = position.xy;
-          vUv = uv;
-        }
-      `,
-      fragmentShader:`
-        uniform float uBrightness;
-        uniform vec2 uPosition;
-        uniform vec3 uColor;
-        uniform float uAlpha;
-        uniform sampler2D tDiffuse;
-
-        varying vec2 vPosition;
-        varying vec2 vUv;
-        
-
-        void main(){
-          vec2 newUV = vec2(vUv.x , vUv.y + sin(vUv.x * 20.0)*0.1);
-          vec4 tex = texture2D (tDiffuse, newUV);
-          tex.rgb += uColor;
-          float brightness = sin(uBrightness + vUv.x);
-
-          gl_FragColor = tex/uBrightness;
-        }
-      `,
+      vertexShader: vertexShader,
+      fragmentShader:fragmentShader,
     });
 
     gui.add(customShaderPass.uniforms.uPosition.value, 'x', -1, 1, 0.01);
