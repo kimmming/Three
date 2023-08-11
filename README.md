@@ -13,6 +13,9 @@
 4. 3D 지구 생성하기 - https://github.com/kimmming/Three.js-Study/issues/5
 5. 포스트 프로세싱 -  https://github.com/kimmming/Three.js-Study/issues/6
 6. 셰이더 -  https://github.com/kimmming/Three.js-Study/issues/7
+7. 셰이더로 3D 지구 적용하기 - https://github.com/kimmming/Three.js-Study/issues/8
+
+
 ## 커밋 컨벤션
 
 
