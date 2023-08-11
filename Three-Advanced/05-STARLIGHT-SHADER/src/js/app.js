@@ -19,6 +19,8 @@ export default function () {
     height: window.innerHeight,
   };
 
+  const clock = new THREE.Clock();
+
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
   });
@@ -89,18 +91,16 @@ export default function () {
 
     const customShaderPass = new ShaderPass({
       uniforms: {
+        uBrightness: {value:0.3},
         uPosition: { value: new THREE.Vector2(0, 0)}, 
-        uColor: {value: new THREE.Vector3(0,0,0.3)},
+        uColor: {value: new THREE.Vector3(0,0,0.15)},
         uAlpha: { value: 0.5},
         tDiffuse: { value: null },
-        uBrightness: {value:1}
       },
       vertexShader: vertexShader,
       fragmentShader:fragmentShader,
     });
 
-    gui.add(customShaderPass.uniforms.uPosition.value, 'x', -1, 1, 0.01);
-    gui.add(customShaderPass.uniforms.uPosition.value, 'y', -1, 1, 0.01);
     gui.add(customShaderPass.uniforms.uBrightness, 'value', 0,1,0.01).name('brghtness');
 
     effectComposer.addPass(customShaderPass);
@@ -260,7 +260,7 @@ export default function () {
     scene.add(earthGroup,star);
 
     return{
-        earthGroup,star
+        earthGroup,star, curve
     }
   }
 
@@ -282,7 +282,7 @@ export default function () {
   };
 
   const draw = (obj) => {
-    const {earthGroup, star} = obj;
+    const {earthGroup, star, curve} = obj;
     earthGroup.rotation.x += 0.0005;
     earthGroup.rotation.y += 0.0005;
 
@@ -292,6 +292,17 @@ export default function () {
 
     controls.update();
     effectComposer.render();
+
+    const timeElampsed = clock.getElapsedTime();
+
+    let drawRangeCount = curve.geometry.drawRange.count;
+    const progress = timeElampsed /2.5;
+    const speed = 3;
+
+    drawRangeCount = progress* speed * 960;
+
+    curve.geometry.setDrawRange(0,drawRangeCount);
+
     // renderer.render(scene, camera);
     requestAnimationFrame(() => {
       draw(obj);

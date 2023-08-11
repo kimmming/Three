@@ -9,7 +9,7 @@ uniform float uBrightness;
   
 
   void main(){
-    vec2 newUV = vec2(vUv.x , vUv.y + sin(vUv.x * 20.0)*0.1);
+    vec2 newUV = vec2(vUv.x , vUv.y );
     vec4 tex = texture2D (tDiffuse, newUV);
     tex.rgb += uColor;
     float brightness = sin(uBrightness + vUv.x);
