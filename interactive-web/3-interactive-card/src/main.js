@@ -10,6 +10,8 @@ window.addEventListener('load', function(){
 function init(){
   const gui = new  GUI();
 
+  const COLORS = ['#ff6e6e', '#31e0c1', '#660011', '#31e3']
+
   const renderer = new THREE.WebGL1Renderer({
     antialias: true,
     alpha: true,
@@ -95,4 +97,16 @@ function init(){
     renderer.render(scene, camera);
   };
   window.addEventListener('resize', handleResize);
+
+  const container = document.querySelector('.container');
+  COLORS.forEach(color =>{
+    const button = document.createElement('button');
+
+    button.style.backgroundColor = color;
+
+    button.addEventListener('click',()=>{
+      card.mesh.material.color = new THREE.Color(color);
+    })
+    container.appendChild(button);
+  })
 };
