@@ -5,7 +5,7 @@
 
 ## 강의 기록 
 
-클릭시 issue 페이지로 넘어갑니다.
+클릭시 강의 기록 issue 페이지로 넘어갑니다.
 
 [1. Vite로 보일러플레이트 구성하기](https://github.com/kimmming/Three.js-Study/issues/1)
 
