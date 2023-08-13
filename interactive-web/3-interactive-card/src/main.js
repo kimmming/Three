@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
+import Card from './Card.js'
 
 window.addEventListener('load', function(){
   init();
@@ -11,26 +13,35 @@ function init(){
     alpha: true,
   });
 
-  // renderer.setClearAlpha(0.5);
-  renderer.setClearColor(0x00aaff, 0.5);
 
   renderer.setSize(window.innerWidth, window.innerHeight);
+
   document.body.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
 
-  const textureLoader = new THREE.TextureLoader();
-  const texture = textureLoader.load('https://images.unsplash.com/photo-1549793959-284bccc3331b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2t5JTIwdGV4dHVyZXxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80')
-
-  scene.background = texture;
-  
   const camera = new THREE.PerspectiveCamera(
     75,
-    window.innerWidth/window.innerHeight,
+    window.innerWidth / window.innerHeight,
     1,
     500,
   );
-  camera.position.set(0,0,5);
+  
+  camera.position.z = 25;
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+
+  const card = new Card({
+    width: 10,
+    height: 15.8,
+    color: '#0077ff',
+  });
+
+  scene.add(card.mesh);
+
+  const ambientLight = new THREE.AmbientLight(0xffff, 0.8);
+  scene.add(ambientLight);
+  
 
   render();
 
