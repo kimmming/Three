@@ -14,6 +14,8 @@
 5. 포스트 프로세싱 -  https://github.com/kimmming/Three.js-Study/issues/6
 6. 셰이더 -  https://github.com/kimmming/Three.js-Study/issues/7
 7. 셰이더로 3D 지구 적용하기 - https://github.com/kimmming/Three.js-Study/issues/8
+8. 인터랙티브 카드 - https://github.com/kimmming/Three.js-Study/issues/9
+9. 3D 공간 생성 - https://github.com/kimmming/Three.js-Study/issues/12
 
 
 ## 커밋 컨벤션
