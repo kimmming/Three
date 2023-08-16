@@ -5,15 +5,25 @@
 
 ## 강의 기록 
 
-클릭시 issue 페이지로 넘어갑니다.
+클릭시 강의 기록 issue 페이지로 넘어갑니다.
 
-1. Vite로 보일러플레이트 구성하기 - https://github.com/kimmming/Three.js-Study/issues/1
-2. 3D 큐브 생성하기 - https://github.com/kimmming/Three.js-Study/issues/3
-3. 기본 템플릿 생성하기 - https://github.com/kimmming/Three.js-Study/issues/4
-4. 3D 지구 생성하기 - https://github.com/kimmming/Three.js-Study/issues/5
-5. 포스트 프로세싱 -  https://github.com/kimmming/Three.js-Study/issues/6
-6. 셰이더 -  https://github.com/kimmming/Three.js-Study/issues/7
-7. 셰이더로 3D 지구 적용하기 - https://github.com/kimmming/Three.js-Study/issues/8
+[1. Vite로 보일러플레이트 구성하기](https://github.com/kimmming/Three.js-Study/issues/1)
+
+[2. 3D 큐브 생성하기](https://github.com/kimmming/Three.js-Study/issues/3)
+
+[3. 기본 템플릿 생성하기](https://github.com/kimmming/Three.js-Study/issues/4)
+
+[4. 3D 지구 생성하기](https://github.com/kimmming/Three.js-Study/issues/5)
+
+[5. 포스트 프로세싱](https://github.com/kimmming/Three.js-Study/issues/6)
+
+[6. 셰이더](https://github.com/kimmming/Three.js-Study/issues/7)
+
+[7. 셰이더로 3D 지구 적용하기](https://github.com/kimmming/Three.js-Study/issues/8)
+
+[8. 인터랙티브 카드](https://github.com/kimmming/Three.js-Study/issues/9)
+
+[9.  3D 공간 생성](https://github.com/kimmming/Three.js-Study/issues/12)
 
 
 ## 커밋 컨벤션
