@@ -18,23 +18,29 @@ function init(){
     75,
     window.innerWidth/window.innerHeight,
     1,
-    500,
+    10000,
   );
   camera.position.set(0,0,5);
 
-  new OrbitControls(camera, renderer.domElement);
-
-  const textureLoader = new THREE.TextureLoader(
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.minDistance = 5;
+  controls.maxDistance = 100;
     
-  );
+  const textureLoader = new THREE.TextureLoader().setPath('assets/textures/Yokohama/');
 
-  const geometry = new THREE.BoxGeometry(3,3,3);
-  const material = new THREE.MeshPhongMaterial({
-    color:0xaaccee,
+  const images = [
+    'posx.jpg', 'negx.jpg',
+    'posy.jpg', 'negy.jpg',
+    'posz.jpg', 'negz.jpg',
+  ];
+
+  const geometry = new THREE.BoxGeometry(5000,5000,5000);
+  const materials = images.map(image => new THREE.MeshBasicMaterial({
+    map: textureLoader.load(image),
     side: THREE.BackSide,
-  });
+  }))
 
-  const skybox = new THREE.Mesh(geometry, material);
+  const skybox = new THREE.Mesh(geometry, materials);
   scene.add(skybox);
 
   const pointLight = new THREE.PointLight(0xffffff,0.8);
