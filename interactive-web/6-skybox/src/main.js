@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
+import { GUI } from 'lil-gui'
 
 window.addEventListener('load', function(){
   init();
 })
 
 function init(){
+  const gui = new GUI();
 
-  const renderer = new THREE.WebGL1Renderer({
+  const renderer = new THREE.WebGLRenderer({
     antialias: true
   });
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -20,7 +22,7 @@ function init(){
     1,
     10000,
   );
-  camera.position.set(0,0,5);
+  camera.position.set(0,0,100);
 
   /* 큐브맵 텍스처 이용*/
   // const control = new OrbitControls(camera, renderer.domElement);
@@ -45,22 +47,70 @@ function init(){
   // const skybox = new THREE.Mesh(geometry, materials);
   // scene.add(skybox);
  /* 큐브맵 텍스처 이용 */
- new OrbitControls(camera, renderer.domElement);
-  const cubeTexureLoader = new THREE.CubeTextureLoader().setPath('assets/textures/Yokohama/');
+  // new OrbitControls(camera, renderer.domElement);
+  // const cubeTexureLoader = new THREE.CubeTextureLoader().setPath('assets/textures/Yokohama/');
     
-  const images = [
-    'posx.jpg', 'negx.jpg',
-    'posy.jpg', 'negy.jpg',
-    'posz.jpg', 'negz.jpg',
-  ];
+  // const images = [
+  //   'posx.jpg', 'negx.jpg',
+  //   'posy.jpg', 'negy.jpg',
+  //   'posz.jpg', 'negz.jpg',
+  // ];
 
-  const cubeTexture = cubeTexureLoader.load(images);
-  scene.background = cubeTexture;
+  // const cubeTexture = cubeTexureLoader.load(images);
+  // scene.background = cubeTexture;
+
+  /* 360 파노라마 텍스처를 이용한 3차원 공간 표현 */
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+
+  controls.enableZoom = false;
+  controls.enableDamping = true;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.5;
+
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load('assets/textures/village.jpeg');
+  
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = texture;
+
+  const sphereGeometry = new THREE.SphereGeometry(30, 50, 50);
+  const sphereMaterial = new THREE.MeshBasicMaterial({
+    envMap: texture,
+   
+  });
+
+  const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
+
+  scene.add(sphere);
+
+  gui
+    .add(texture, 'mapping',{
+      Reflection: THREE.EquirectangularReflectionMapping,
+      Refraction: THREE.EquirectangularRefractionMapping,
+    })
+    .onChange(()=>{
+      sphereMaterial.needsUpdate =true;
+    })
+
+  gui
+    .add(sphereMaterial, 'reflectivity')
+    .min(0)
+    .max(1)
+    .step(0.01);
 
   
+  gui
+    .add(sphereMaterial, 'refractionRatio')
+    .min(0)
+    .max(1)
+    .step(0.01);
+  
+
   render();
 
   function render(){
+    controls.update()
     renderer.render(scene, camera);
     requestAnimationFrame(render);
   };
