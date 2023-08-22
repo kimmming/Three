@@ -21,5 +21,9 @@
     "prettier": "^2.7.1",
     "sass": "^1.56.1",
     "vite": "^4.0.0"
+  },
+  "dependencies": {
+    "@ashthornton/asscroll": "^2.0.11",
+    "three": "^0.147.0"
   }
 }

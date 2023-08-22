@@ -1,59 +1,127 @@
+import * as THREE from 'three';
+import vertexShader from '../shaders/vertex.glsl?raw';
+import fragmentShader from '../shaders/fragment.glsl?raw';
+import ASScroll from '@ashthornton/asscroll'
+
+const asscroll = new ASScroll({
+  disableRaf: true
+});
+asscroll.enable();
+
 export default function () {
-  // WebGL 시작하기
+  const renderer = new THREE.WebGLRenderer({
+    alpha: true,
+  });
+
   const container = document.querySelector('#container');
-  const canvas = document.createElement('canvas');
-  canvas.width = 300;
-  canvas.height = 300;
 
-  container.appendChild(canvas);
+  container.appendChild(renderer.domElement);
 
-  const gl = canvas.getContext('webgl');
+  const canvasSize = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    canvasSize.width / canvasSize.height,
+    0.1,
+    100
+  );
+  camera.position.set(0, 0, 50);
+  camera.fov = Math.atan(canvasSize.height / 2 /50) * (180 /Math.PI) * 2;
+
+  const imageRepository =[];
+
+  const loadImages = async () =>{
+    const images = [...document.querySelectorAll('main .content img')];
   
-  // vertex shader 만들기
-  const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-  gl.shaderSource(vertexShader, `
-    attribute vec2 position;
-    varying vec2 vPosition;
+    const fetchImages = images.map((image)=> new Promise((resolve, reject)=>{
+      image.onload = resolve(image);
+      image.onerror = reject;
+    }));
 
-    void main(){
-        vec2 newPosition = (position + 1.0) / 2.0;
-        gl_Position = vec4(position, 0.0, 1.0);
+    const loadedImages = await Promise.all(fetchImages);
+    return loadedImages;
+  }
 
-        vPosition = newPosition;
-      }
-  `);
-  gl.compileShader(vertexShader);
+  const createImages = (images) => {
+    console.log('createImages', images)
 
-  // fragment shader 만들기
-  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-  gl.shaderSource(fragmentShader, `
-    precision mediump float;
-    varying vec2 vPosition;
+    const imageMeshes = images.map(image =>{
+      const {width, height} =  image.getBoundingClientRect();
       
-    void main(){
-      gl_FragColor = vec4(vPosition, 1.0, 0.3);
-    }
-  `);
-  gl.compileShader(fragmentShader);
+      const material = new THREE.ShaderMaterial({
+      // wireframe: true,
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      side: THREE.DoubleSide
+    });
+    const geometry = new THREE.PlaneGeometry(width, height, 16, 16);
+    const mesh = new THREE.Mesh(geometry, material);
 
-  // vertex & fragment 를 하나로
-  const program = gl.createProgram();
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
+    imageRepository.push({img:image, mesh});
+    
+    return mesh;
+    });
+    return imageMeshes;
+  };
 
-  gl.linkProgram(program);
-  gl.useProgram(program);
+  const create = async () =>{
+    const loadedImages = await loadImages();
+    const images = createImages([...loadedImages]);
+    scene.add(...images);
+  };
 
-  // 정점 데이텉 넘겨주기
-  const vertices = new Float32Array([-1,-1,-1,1,1,1,-1,-1,1,1,1,-1]);
-  const vertexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+  const retransform = () =>{
+    imageRepository.forEach(({img, mesh})=> {
+      const {width, height, top, left} =  img.getBoundingClientRect();
+      const {width: originWidth} = mesh.geometry.parameters;
+      const scale = width /originWidth;
+      
+      mesh.scale.x = scale;
+      mesh.scale.y =scale;
 
-  // 정점의 위치를 어떻게 계산할지 정보를 넘겨주기
-  const position = gl.getAttribLocation(program, 'position');
-  gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);  
+      mesh.position.y = canvasSize.height / 2 - height / 2 - top;
+      mesh.position.x = -canvasSize.width / 2 + width / 2 + left;
+    });
+  }
 
-  gl.enableVertexAttribArray(position);
-  gl.drawArrays(gl.TRIANGLES, 0, 6);
+  const resize = () => {
+    canvasSize.width = window.innerWidth;
+    canvasSize.height = window.innerHeight;
+
+    camera.aspect = canvasSize.width / canvasSize.height;
+    camera.fov = Math.atan(canvasSize.height / 2 /50) * (180 /Math.PI) * 2;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(canvasSize.width, canvasSize.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  };
+
+  const addEvent = () => {
+    window.addEventListener('resize', resize);
+  };
+
+  const draw = () => {
+    renderer.render(scene, camera);
+    retransform();
+
+    asscroll.update();
+
+    requestAnimationFrame(() => {
+      draw();
+    });
+  };
+
+  const initialize = async () => {
+    await create();
+    addEvent();
+    retransform();
+    resize();
+    draw();
+  };
+
+  initialize();
 }
